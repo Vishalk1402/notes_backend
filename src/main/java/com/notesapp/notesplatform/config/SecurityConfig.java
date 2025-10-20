@@ -31,19 +31,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors().and()
-            .csrf().disable()
-            .authorizeHttpRequests()
-                .requestMatchers("/auth/**").permitAll()  
+                .cors().and()
+                .csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/auth/**", "/ping").permitAll() // ✅ Added /ping here
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()              
-            .and()
-            .sessionManagement()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
 }
